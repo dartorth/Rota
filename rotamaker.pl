@@ -55,24 +55,28 @@ sub row{
    my @rows=( $showOnCall?oncallRow($date,$user,$showWeekend):(),
               dutyRow($date,$user,$showWeekend),
 			  $showComments?commentRow($date,$user,$showWeekend):());
-   return "  <tr>\n$rowHead\n    ".join ("  </tr>,  <tr>",@rows)."  </tr>"
+   return "  <tr>\n$rowHead\n    ".join ("  </tr>\n  <tr>",@rows)."  </tr>"
 }
 
 sub oncallRow{
    my ($date,$user,$showWeekend)=@_;
-   return "<td class=oc  colspan=2>on call</td>\n" x 7;
-
+   my $row="";
+   $row.= "     <td class=oc  colspan=2>".getValue($date,$user,"oc")."</td>\n" for ($date..$date+6) ;
+   return $row;
 }
 
 sub dutyRow{
    my ($date,$user,$showWeekend)=@_;
-   return "
-        <td class=am>Type<br>Location</td><td class=pm>Type<br>Location</td>" x 7;
+   my $row="";
+   $row.= "     <td class=am>".getValue($date,$user,"am")."<br>Location</td>\n    <td class=pm>".getValue($date,$user,"pm")."<br>Location</td>\n" for ($date..$date+6) ;
+   return $row;
 }
 
 sub commentRow{
    my ($date,$user,$showWeekend)=@_;
-   return "    <td class=comment  colspan=2>comment</td>\n" x 7;
+   my $row="";
+   $row.= "     <td class=comment  colspan=2>".getValue($date,$user,"co")."</td>\n" for ($date..$date+6) ;
+   return $row;
 }
 
 sub table{
@@ -86,8 +90,20 @@ sub  toDateStr{
    return "dd/mm/yyyy"
 }
 
+sub getValue{
+  my ($date,$user,$session)=@_;
+  if ($session eq "oc"){return rand()>.9?"oc":"&nbsp;"}
+  elsif ($session eq "am"){return ("Elective Clinic", "Fracture Clinic","Elective list","Trauma List","CPD")[5*rand()]}
+  elsif ($session eq "pm"){return ("Elective Clinic", "Fracture Clinic","Elective list","Trauma List","CPD")[5*rand()]}
+  elsif ($session eq "co"){return "ncr"}
+  else {return "poop"};
+
+
+}
+
 sub css{
 return "
+td{text-align:center}
 .am{background-color:lightblue; width:8em;}
 .pm{background-color:lightpink; width:8em;}
 .oc{background-color:lightyellow; width:16em;}
