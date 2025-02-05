@@ -8,7 +8,6 @@ my $showWeekend=1;
 my $showOnCall=1;
 my $showComments=1;
 
-
 open my $fh,">","./TestRota.html" or die "can not create rita file";
 print $fh table(
           title("domain","interval","users"),
@@ -77,13 +76,21 @@ sub commentRow{
 }
 
 sub table{
-    my $table="<html><body><table border=1>\n";
+    my $table="<html><head><style>".css()."</style></head><body><table border=1>\n";
 	$table.= $_ foreach @_;
 	$table.="</table></body></html>\n";
 	return $table;
-
 }
 
 sub  toDateStr{
    return "dd/mm/yyyy"
+}
+
+sub css{
+return "
+.am{background-color:lightblue; width:8em;}
+.pm{background-color:lightpink; width:8em;}
+.oc{background-color:lightyellow; width:16em;}
+.comment{background-color:lightgreen; width:16em;}
+";
 }
